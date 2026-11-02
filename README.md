@@ -146,7 +146,7 @@ nats-bench-nas/
 | **Experiment framework** | `ExperimentRunner`, budget management, CSV result storage |
 | **Integration & debugging** | Wiring all algorithms, final debugging, reproducibility |
 
-### Developer B — Teammate (30% coding + report)
+### Developer B — Marit (30% coding + report)
 
 | Responsibility | Details |
 |---------------|---------|

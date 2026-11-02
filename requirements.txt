@@ -1,0 +1,17 @@
+# NATS-Bench NAS Project — Dependencies
+# Install with: pip install -r requirements.txt
+
+# === Core benchmark ===
+nats_bench                 # NATS-Bench tabular NAS benchmark API
+
+# === Scientific computing ===
+numpy>=1.24               # Array operations, random number generation
+scipy>=1.10               # curve_fit for power-law extrapolation (LCE)
+scikit-learn>=1.2         # GaussianProcessRegressor for Bayesian Optimisation
+
+# === Visualisation ===
+matplotlib>=3.7           # All plots and figures
+
+# === Testing ===
+pytest>=7.0               # Unit and integration tests
+

@@ -171,3 +171,4 @@ class BenchmarkAPI:
             "train_epoch_time": cost.get("T-train@epoch"),
             "train_total_time": cost.get("T-train@total"),
         }
+

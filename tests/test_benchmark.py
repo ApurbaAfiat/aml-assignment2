@@ -72,3 +72,4 @@ def test_invalid_dataset_raises(api):
 def test_invalid_index_raises(api):
     with pytest.raises(IndexError):
         api.arch_str(99999)
+

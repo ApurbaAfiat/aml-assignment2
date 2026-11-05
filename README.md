@@ -171,6 +171,29 @@ Both developers follow these rules to ensure smooth integration:
 
 ---
 
+## Implementation Progress
+
+### Completed by Apurba (Lead Developer — 70%)
+- [x] **Project Scaffolding**: Modular directory structure, `.gitignore`, and `requirements.txt`.
+- [x] **Benchmark Setup**: Verified fast-mode data loading across all 15,625 architectures on CIFAR-10, CIFAR-100, and ImageNet16-120.
+- [x] **Standard Data Types (`utils/types.py`)**: `EvalRecord`, `SearchResult`, and `BudgetConfig` dataclasses defining the contract between algorithms and evaluation runners.
+- [x] **Benchmark API Wrapper (`benchmark/nats_api.py`)**: Encapsulates dataset quirks (such as the `cifar10-valid` vs `cifar10` split), key variation handling, in-memory query caching, and metric extraction.
+- [x] **Benchmark Unit Tests (`tests/test_benchmark.py`)**: 8 comprehensive test cases passing for dataset queries, cost lookups, and boundary error handling.
+- [x] **Abstract Base NAS Class (`algorithms/base.py`)**: `BaseNAS` abstract class enforcing the `run()` contract, managing private RNG states (`np.random.RandomState`), sequential evaluation counters, validation-based incumbent tracking, and anytime curve generation.
+- [x] **Master Experiment Config (`configs/experiment_config.py`)**: Centralized `ExperimentConfig` dataclass parameterizing datasets, budgets, seeds, and algorithm-specific parameters with automated sanity checks.
+
+### Next Stages
+- [ ] **Architecture Utilities (`utils/arch_utils.py`)** — One-hot graph encoding & decoding for surrogate models *(Apurba)*
+- [ ] **Random Search (`algorithms/random_search.py`)** *(Apurba)*
+- [ ] **Random Sample (`algorithms/random_sample.py`)** *(Marit)*
+- [ ] **Bayesian Optimisation (`algorithms/bayesian_opt.py`)** *(Apurba)*
+- [ ] **Successive Halving (`algorithms/successive_halving.py`)** *(Apurba)*
+- [ ] **Learning Curve Extrapolation (`algorithms/learning_curve.py`)** *(Marit)*
+- [ ] **Experiment Runner & Evaluation Pipeline (`experiments/runner.py`)** *(Apurba)*
+- [ ] **Visualisation & Scientific Report (`visualization/`, `report/`)** *(Marit)*
+
+---
+
 ## Setup
 
 ### 1. Clone the repository

@@ -181,10 +181,11 @@ Both developers follow these rules to ensure smooth integration:
 - [x] **Benchmark Unit Tests (`tests/test_benchmark.py`)**: 8 comprehensive test cases passing for dataset queries, cost lookups, and boundary error handling.
 - [x] **Abstract Base NAS Class (`algorithms/base.py`)**: `BaseNAS` abstract class enforcing the `run()` contract, managing private RNG states (`np.random.RandomState`), sequential evaluation counters, validation-based incumbent tracking, and anytime curve generation.
 - [x] **Master Experiment Config (`configs/experiment_config.py`)**: Centralized `ExperimentConfig` dataclass parameterizing datasets, budgets, seeds, and algorithm-specific parameters with automated sanity checks.
+- [x] **Architecture Utilities (`utils/arch_utils.py`)**: Graph parsing, canonical edge ordering, and 30-dimensional one-hot encoding/decoding for surrogate models with verified round-trip preservation.
+- [x] **Random Search (`algorithms/random_search.py`)**: Full implementation of the baseline search algorithm with sampling without replacement, dual budget support (evaluations & simulated time), and incumbent tracking.
 
 ### Next Stages
-- [ ] **Architecture Utilities (`utils/arch_utils.py`)** — One-hot graph encoding & decoding for surrogate models *(Apurba)*
-- [ ] **Random Search (`algorithms/random_search.py`)** *(Apurba)*
+- [ ] **Random Search Unit Tests (`tests/test_random_search.py`)** *(Apurba)*
 - [ ] **Random Sample (`algorithms/random_sample.py`)** *(Marit)*
 - [ ] **Bayesian Optimisation (`algorithms/bayesian_opt.py`)** *(Apurba)*
 - [ ] **Successive Halving (`algorithms/successive_halving.py`)** *(Apurba)*

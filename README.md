@@ -183,12 +183,13 @@ Both developers follow these rules to ensure smooth integration:
 - [x] **Master Experiment Config (`configs/experiment_config.py`)**: Centralized `ExperimentConfig` dataclass parameterizing datasets, budgets, seeds, and algorithm-specific parameters with automated sanity checks.
 - [x] **Architecture Utilities (`utils/arch_utils.py`)**: Graph parsing, canonical edge ordering, and 30-dimensional one-hot encoding/decoding for surrogate models with verified round-trip preservation.
 - [x] **Random Search (`algorithms/random_search.py`)**: Full implementation of the baseline search algorithm with sampling without replacement, dual budget support (evaluations & simulated time), and incumbent tracking.
-- [x] **Random Sample (`algorithms/random_sample.py`)** *(Marit)*
+- [x] **Random Search Unit Tests (`tests/test_random_search.py`)**: 4 unit tests verifying budget adherence, non-decreasing incumbent curves, seed reproducibility, and simulated time limits.
+- [x] **Bayesian Optimisation (`algorithms/bayesian_opt.py`)**: Sample-efficient NAS using Gaussian Process surrogate regression with Matern kernel and Expected Improvement (EI) acquisition function.
+- [x] **Bayesian Optimisation Unit Tests (`tests/test_bayesian_opt.py`)**: 4 unit tests verifying budget execution, EI mathematical behavior, monotonicity, and reproducibility.
 
 ### Next Stages
-- [ ] **Random Search Unit Tests (`tests/test_random_search.py`)** *(Apurba)*
-- [ ] **Bayesian Optimisation (`algorithms/bayesian_opt.py`)** *(Apurba)*
 - [ ] **Successive Halving (`algorithms/successive_halving.py`)** *(Apurba)*
+- [ ] **Random Sample (`algorithms/random_sample.py`)** *(Marit)*
 - [ ] **Learning Curve Extrapolation (`algorithms/learning_curve.py`)** *(Marit)*
 - [ ] **Experiment Runner & Evaluation Pipeline (`experiments/runner.py`)** *(Apurba)*
 - [ ] **Visualisation & Scientific Report (`visualization/`, `report/`)** *(Marit)*

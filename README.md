@@ -183,10 +183,10 @@ Both developers follow these rules to ensure smooth integration:
 - [x] **Master Experiment Config (`configs/experiment_config.py`)**: Centralized `ExperimentConfig` dataclass parameterizing datasets, budgets, seeds, and algorithm-specific parameters with automated sanity checks.
 - [x] **Architecture Utilities (`utils/arch_utils.py`)**: Graph parsing, canonical edge ordering, and 30-dimensional one-hot encoding/decoding for surrogate models with verified round-trip preservation.
 - [x] **Random Search (`algorithms/random_search.py`)**: Full implementation of the baseline search algorithm with sampling without replacement, dual budget support (evaluations & simulated time), and incumbent tracking.
+- [x] **Random Sample (`algorithms/random_sample.py`)** *(Marit)*
 
 ### Next Stages
 - [ ] **Random Search Unit Tests (`tests/test_random_search.py`)** *(Apurba)*
-- [ ] **Random Sample (`algorithms/random_sample.py`)** *(Marit)*
 - [ ] **Bayesian Optimisation (`algorithms/bayesian_opt.py`)** *(Apurba)*
 - [ ] **Successive Halving (`algorithms/successive_halving.py`)** *(Apurba)*
 - [ ] **Learning Curve Extrapolation (`algorithms/learning_curve.py`)** *(Marit)*

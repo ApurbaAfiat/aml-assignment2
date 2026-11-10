@@ -40,3 +40,6 @@ figures/*.pdf
 # pytest
 .pytest_cache/
 
+# Assignment submission
+AutoML_Assignment_2.pdf
+todo

@@ -186,10 +186,14 @@ Both developers follow these rules to ensure smooth integration:
 - [x] **Random Search Unit Tests (`tests/test_random_search.py`)**: 4 unit tests verifying budget adherence, non-decreasing incumbent curves, seed reproducibility, and simulated time limits.
 - [x] **Bayesian Optimisation (`algorithms/bayesian_opt.py`)**: Sample-efficient NAS using Gaussian Process surrogate regression with Matern kernel and Expected Improvement (EI) acquisition function.
 - [x] **Bayesian Optimisation Unit Tests (`tests/test_bayesian_opt.py`)**: 4 unit tests verifying budget execution, EI mathematical behavior, monotonicity, and reproducibility.
+- [x] **Successive Halving (`algorithms/successive_halving.py`)**: Multi-fidelity NAS algorithm with geometric rung schedules, candidate elimination (factor $\eta$), survivor promotion, and dynamic pool sizing.
+- [x] **Successive Halving Unit Tests (`tests/test_successive_halving.py`)**: 4 unit tests verifying budget limits, multi-fidelity rung promotion, monotonicity, and reproducibility.
+
+### Completed by Marit (Developer B — 30%)
+- [x] **Random Sample (`algorithms/random_sample.py`)**: Upfront candidate subset sampling and full-fidelity evaluation.
+- [x] **Random Sample Unit Tests (`tests/test_random_sample.py`)**: 4 unit tests verifying sample size budgets, incumbent tracking, and seed reproducibility.
 
 ### Next Stages
-- [ ] **Successive Halving (`algorithms/successive_halving.py`)** *(Apurba)*
-- [ ] **Random Sample (`algorithms/random_sample.py`)** *(Marit)*
 - [ ] **Learning Curve Extrapolation (`algorithms/learning_curve.py`)** *(Marit)*
 - [ ] **Experiment Runner & Evaluation Pipeline (`experiments/runner.py`)** *(Apurba)*
 - [ ] **Visualisation & Scientific Report (`visualization/`, `report/`)** *(Marit)*

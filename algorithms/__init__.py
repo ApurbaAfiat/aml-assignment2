@@ -5,6 +5,7 @@ from algorithms.random_search import RandomSearch
 from algorithms.random_sample import RandomSample
 from algorithms.bayesian_opt import BayesianOptimization
 from algorithms.successive_halving import SuccessiveHalving
+from algorithms.learning_curve import LearningCurve
 
 __all__ = [
     "BaseNAS",

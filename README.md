@@ -188,6 +188,11 @@ Both developers follow these rules to ensure smooth integration:
 - [x] **Bayesian Optimisation Unit Tests (`tests/test_bayesian_opt.py`)**: 4 unit tests verifying budget execution, EI mathematical behavior, monotonicity, and reproducibility.
 - [x] **Successive Halving (`algorithms/successive_halving.py`)**: Multi-fidelity NAS algorithm with geometric rung schedules, candidate elimination (factor $\eta$), survivor promotion, and dynamic pool sizing.
 - [x] **Successive Halving Unit Tests (`tests/test_successive_halving.py`)**: 4 unit tests verifying budget limits, multi-fidelity rung promotion, monotonicity, and reproducibility.
+- [x] **Benchmark Multi-Fidelity Fix (`benchmark/nats_api.py`)**: Added intermediate-epoch fallback to `valtest-accuracy` for CIFAR-100 and ImageNet16-120 queries.
+- [x] **CSV Results Serialization (`experiments/results.py`)**: Step-by-step per-run history CSV and consolidated `summary.csv` exporters/loaders using standard library `csv`.
+- [x] **Experiment Runner (`experiments/runner.py`)**: Orchestrates fair comparisons across all 5 algorithms, 3 datasets, and multiple random seeds with full-fidelity post-search evaluation.
+- [x] **CLI Entry Point (`run_experiments.py`)**: Command-line interface supporting custom datasets, algorithms, budgets (`evaluations` and `simulated_time`), and seed counts.
+- [x] **End-to-End Integration Tests (`tests/test_integration.py`)**: Integration suite validating pipeline execution, CSV schemas, and shared `BaseNAS` contract compliance (33/33 total tests passing).
 
 ### Completed by Marit (Developer B — 30%)
 - [x] **Random Sample (`algorithms/random_sample.py`)**: Upfront candidate subset sampling and full-fidelity evaluation.
@@ -196,7 +201,7 @@ Both developers follow these rules to ensure smooth integration:
 - [x] **Learning Curve Extrapolation unit tests (`tests/test_learning_curve.py`)** unit tests to verify learning curve extrapolation implementation
 
 ### Next Stages
-- [ ] **Experiment Runner & Evaluation Pipeline (`experiments/runner.py`)** *(Apurba)*
+- [ ] **Full Experimental Evaluation (`results/`)** *(Apurba)*
 - [ ] **Visualisation & Scientific Report (`visualization/`, `report/`)** *(Marit)*
 
 ---

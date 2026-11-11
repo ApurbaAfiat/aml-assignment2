@@ -131,8 +131,8 @@ class BenchmarkAPI:
             info = self._api.get_more_info(
                 arch_index, dataset, hp=hp, iepoch=iepoch, is_random=False
             )
-            val_acc = float(info["valid-accuracy"])
-            test_acc = float(info["test-accuracy"])
+            val_acc = float(info.get("valid-accuracy", info.get("valtest-accuracy", 0.0)))
+            test_acc = float(info.get("test-accuracy", info.get("valtest-accuracy", 0.0)))
             train_time = float(info.get("train-all-time", info.get("train-per-time", 0.0)))
 
         record = EvalRecord(

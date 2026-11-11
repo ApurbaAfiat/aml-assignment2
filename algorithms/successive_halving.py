@@ -7,7 +7,7 @@ prunes the bottom fraction, and promotes the top survivors to higher fidelities.
 """
 
 import time
-from typing import List, Tuple
+from typing import List, Tuple, Set
 import numpy as np
 
 from algorithms.base import BaseNAS
@@ -52,57 +52,83 @@ class SuccessiveHalving(BaseNAS):
             return max(self.eta ** (self.num_rungs - 1), 27)
 
     def run(self) -> SearchResult:
-        
+        """Execute Successive Halving across fidelity rungs.
+
+        For 'evaluations' budget, runs a single SH bracket sized to the budget.
+        For 'simulated_time' budget, runs repeated SH brackets on unvisited
+        candidates until the time budget is exhausted.
+        """
         start_time = time.time()
         total_archs = self.benchmark.num_architectures
         n0 = self._compute_initial_pool_size()
 
-        # Step 1: Sample initial pool of N0 unique candidate architectures
-        sampled_indices = self.rng.choice(total_archs, size=n0, replace=False).tolist()
-        current_candidates: List[int] = sampled_indices
-
+        visited: Set[int] = set()
         budget_exhausted = False
         rung_records_metadata = []
+        bracket_idx = 0
 
-        # Step 2: Iterate through fidelity rungs
-        for rung_idx, fidelity_epochs in enumerate(self.rungs):
-            if budget_exhausted:
+        while not budget_exhausted:
+            # Check remaining unvisited pool
+            remaining = total_archs - len(visited)
+            if remaining == 0:
                 break
 
-            rung_results: List[Tuple[int, float]] = []
-            iepoch = fidelity_epochs - 1
+            pool_size = min(n0, remaining)
+            unvisited_pool = [i for i in range(total_archs) if i not in visited]
+            sampled_indices = self.rng.choice(
+                unvisited_pool, size=pool_size, replace=False
+            ).tolist()
+            visited.update(sampled_indices)
+            current_candidates: List[int] = sampled_indices
 
-            for arch_idx in current_candidates:
-                if self.budget_type == "evaluations":
-                    if len(self.history) >= self.budget:
-                        budget_exhausted = True
-                        break
-                elif self.budget_type == "simulated_time":
-                    current_cost = self.cumulative_cost[-1] if self.cumulative_cost else 0.0
-                    if current_cost >= self.budget:
-                        budget_exhausted = True
-                        break
+            # Iterate through fidelity rungs for this bracket
+            for rung_idx, fidelity_epochs in enumerate(self.rungs):
+                if budget_exhausted:
+                    break
 
-                record = self._evaluate(
-                    arch_index=arch_idx,
-                    hp=200,
-                    iepoch=iepoch,
-                )
-                rung_results.append((arch_idx, record.val_accuracy))
+                rung_results: List[Tuple[int, float]] = []
+                iepoch = fidelity_epochs - 1
 
-            rung_records_metadata.append({
-                "rung": rung_idx,
-                "fidelity_epochs": fidelity_epochs,
-                "candidates_evaluated": len(rung_results),
-            })
+                for arch_idx in current_candidates:
+                    if self.budget_type == "evaluations":
+                        if len(self.history) >= self.budget:
+                            budget_exhausted = True
+                            break
+                    elif self.budget_type == "simulated_time":
+                        current_cost = self.cumulative_cost[-1] if self.cumulative_cost else 0.0
+                        if current_cost >= self.budget:
+                            budget_exhausted = True
+                            break
 
-            # Step 3: Halving / Selection for next rung
-            if rung_idx < self.num_rungs - 1 and not budget_exhausted:
-                # Sort descending by validation accuracy
-                rung_results.sort(key=lambda item: item[1], reverse=True)
-                # Keep top 1 / eta survivors
-                survivor_count = max(1, len(rung_results) // self.eta)
-                current_candidates = [item[0] for item in rung_results[:survivor_count]]
+                    record = self._evaluate(
+                        arch_index=arch_idx,
+                        hp=200,
+                        iepoch=iepoch,
+                    )
+                    rung_results.append((arch_idx, record.val_accuracy))
+
+                rung_records_metadata.append({
+                    "bracket": bracket_idx,
+                    "rung": rung_idx,
+                    "fidelity_epochs": fidelity_epochs,
+                    "candidates_evaluated": len(rung_results),
+                })
+
+                # Halving / Selection for next rung
+                if rung_idx < self.num_rungs - 1 and not budget_exhausted and rung_results:
+                    rung_results.sort(key=lambda item: item[1], reverse=True)
+                    survivor_count = max(1, len(rung_results) // self.eta)
+                    current_candidates = [item[0] for item in rung_results[:survivor_count]]
+
+            bracket_idx += 1
+
+            # For fixed evaluation count, run a single bracket sized to the budget
+            if self.budget_type == "evaluations":
+                break
+            elif self.budget_type == "simulated_time":
+                current_cost = self.cumulative_cost[-1] if self.cumulative_cost else 0.0
+                if current_cost >= self.budget:
+                    break
 
         return self._create_search_result(
             algorithm_name="SuccessiveHalving",
@@ -111,6 +137,7 @@ class SuccessiveHalving(BaseNAS):
                 "rungs": self.rungs,
                 "eta": self.eta,
                 "n0": n0,
+                "num_brackets": bracket_idx,
                 "rung_details": rung_records_metadata,
             },
         )

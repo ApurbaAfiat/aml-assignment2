@@ -8,11 +8,13 @@ Uses:
 """
 
 import time
+import warnings
 from typing import Set, List
 import numpy as np
 from scipy.stats import norm
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import Matern, WhiteKernel
+from sklearn.gaussian_process.kernels import Matern
 
 from algorithms.base import BaseNAS
 from utils.types import SearchResult
@@ -64,6 +66,11 @@ class BayesianOptimization(BaseNAS):
         # Phase 1: Warm-up with Random Evaluations
         # ==========================================
         while len(visited) < self.n_init:
+            if self.budget_type == "simulated_time":
+                current_cost = self.cumulative_cost[-1] if self.cumulative_cost else 0.0
+                if current_cost >= self.budget:
+                    break
+
             candidate_idx = int(self.rng.randint(0, total_archs))
             while candidate_idx in visited:
                 candidate_idx = int(self.rng.randint(0, total_archs))
@@ -96,16 +103,18 @@ class BayesianOptimization(BaseNAS):
             X_train = np.array(features_list, dtype=np.float32)
             y_train = np.array(targets_list, dtype=np.float32)
 
-            # Matern 5/2 kernel with noise handling for tabular evaluations
-            kernel = Matern(length_scale=1.0, nu=2.5) + WhiteKernel(noise_level=1e-3)
+            # Matern 5/2 kernel with fixed numerical nugget (alpha) for deterministic tabular evaluations
+            kernel = Matern(length_scale=1.0, length_scale_bounds=(1e-2, 1e3), nu=2.5)
             gp = GaussianProcessRegressor(
                 kernel=kernel,
-                alpha=1e-6,
+                alpha=1e-4,
                 normalize_y=True,
-                n_restarts_optimizer=2,
+                n_restarts_optimizer=1,
                 random_state=self.seed,
             )
-            gp.fit(X_train, y_train)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", ConvergenceWarning)
+                gp.fit(X_train, y_train)
 
             # 2. Form candidate pool of unvisited architectures
             unvisited_candidates: List[int] = []

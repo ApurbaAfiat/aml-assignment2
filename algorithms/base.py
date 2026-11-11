@@ -7,7 +7,7 @@ and anytime performance curve recording.
 
 from abc import ABC, abstractmethod
 import time
-from typing import List, Optional
+from typing import Dict, List, Optional, Tuple
 import numpy as np
 
 from benchmark.nats_api import BenchmarkAPI
@@ -53,6 +53,8 @@ class BaseNAS(ABC):
         self.best_val_at_step: List[float] = []
         self.best_test_at_step: List[float] = []
         self.cumulative_cost: List[float] = []
+        # Track highest cumulative training time already billed per (arch_index, hp)
+        self._charged_time_per_arch: Dict[Tuple[int, int], float] = {}
 
     @abstractmethod
     def run(self) -> SearchResult:
@@ -103,9 +105,15 @@ class BaseNAS(ABC):
         self.best_val_at_step.append(self._best_val)
         self.best_test_at_step.append(self._best_record.test_accuracy)
 
-        # Accumulate simulated training time
+        # Accumulate marginal simulated training time (avoid double-counting earlier epochs)
+        arch_key = (arch_index, hp)
+        prev_charged = self._charged_time_per_arch.get(arch_key, 0.0)
+        marginal_cost = max(0.0, record.train_time - prev_charged)
+        if record.train_time > prev_charged:
+            self._charged_time_per_arch[arch_key] = record.train_time
+
         prev_cost = self.cumulative_cost[-1] if self.cumulative_cost else 0.0
-        self.cumulative_cost.append(prev_cost + record.train_time)
+        self.cumulative_cost.append(prev_cost + marginal_cost)
 
         return record
 

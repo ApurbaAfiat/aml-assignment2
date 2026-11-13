@@ -173,7 +173,7 @@ Both developers follow these rules to ensure smooth integration:
 
 ## Implementation Progress
 
-### Completed by Apurba (Lead Developer — 70%)
+### Completed by Apurba (Lead Developer — 70% of code)
 - [x] **Project Scaffolding**: Modular directory structure, `.gitignore`, and `requirements.txt`.
 - [x] **Benchmark Setup**: Verified fast-mode data loading across all 15,625 architectures on CIFAR-10, CIFAR-100, and ImageNet16-120.
 - [x] **Standard Data Types (`utils/types.py`)**: `EvalRecord`, `SearchResult`, and `BudgetConfig` dataclasses defining the contract between algorithms and evaluation runners.
@@ -193,9 +193,9 @@ Both developers follow these rules to ensure smooth integration:
 - [x] **Experiment Runner (`experiments/runner.py`)**: Orchestrates fair comparisons across all 5 algorithms, 3 datasets, and multiple random seeds with full-fidelity post-search evaluation.
 - [x] **CLI Entry Point (`run_experiments.py`)**: Command-line interface supporting custom datasets, algorithms, budgets (`evaluations` and `simulated_time`), and seed counts.
 - [x] **End-to-End Integration Tests (`tests/test_integration.py`)**: Integration suite validating pipeline execution, CSV schemas, and shared `BaseNAS` contract compliance (33/33 total tests passing).
-- [x] **Full Experimental Evaluation (`results/`)** *(Apurba)*
+- [x] **Full Experimental Evaluation (`results/`)**
 
-### Completed by Marit (Developer B — 30%)
+### Completed by Marit (Developer B — 30% of code + report)
 - [x] **Random Sample (`algorithms/random_sample.py`)**: Upfront candidate subset sampling and full-fidelity evaluation.
 - [x] **Random Sample Unit Tests (`tests/test_random_sample.py`)**: 4 unit tests verifying sample size budgets, incumbent tracking, and seed reproducibility.
 - [x] **Learning Curve Extrapolation (`algorithms/learning_curve.py`)** learning curve extrapolation implementation

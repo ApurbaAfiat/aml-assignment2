@@ -58,8 +58,7 @@ class LearningCurve(BaseNAS):
             residuals = values - design @ coefficients
             rss = float(residuals @ residuals)
 
-            # BIC-based evidence approximation: models fitting the observations
-            # well receive more weight, with a penalty for model complexity.
+            # models fitting the observations well receive more weight, with a penalty for model complexity.
             variance = max(rss / len(values), 1e-6)
             log_evidence = -0.5 * len(values) * math.log(variance)
             log_evidence -= 0.5 * design.shape[1] * math.log(len(values))
@@ -69,6 +68,8 @@ class LearningCurve(BaseNAS):
             predicted_mean = float(final_design @ coefficients)
 
             parameter_covariance = variance * np.linalg.pinv(design.T @ design)
+
+            # Include observation noise and uncertainty in the fitted coefficients.
             predictive_variance = variance + float(
                 final_design @ parameter_covariance @ final_design.T
             )
@@ -77,7 +78,7 @@ class LearningCurve(BaseNAS):
                 (name, log_evidence, predicted_mean, max(predictive_variance, 1e-6))
             )
 
-        # Normalize the model evidence values into model weights.
+        # Subtract the largest log evidence before exponentiating to keep weights numerically stable.
         max_log_evidence = max(model[1] for model in models)
         unnormalized = [
             math.exp(model[1] - max_log_evidence) for model in models

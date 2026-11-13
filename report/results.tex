@@ -1,0 +1,33 @@
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Method}
+        & \textbf{CIFAR-10}
+        & \textbf{CIFAR-100}
+        & \textbf{ImageNet16-120} \\
+        \hline
+        Random Search
+        & $93.895 \pm 0.284$
+        & $71.696 \pm 1.117$
+        & $44.201 \pm 1.480$ \\
+        Random Sample
+        & $93.922 \pm 0.250$
+        & $71.546 \pm 0.807$
+        & $44.149 \pm 0.808$ \\
+        Bayesian Optimisation
+        & $\mathbf{94.117 \pm 0.231}$
+        & $\mathbf{72.033 \pm 1.000}$
+        & $44.671 \pm 1.037$ \\
+        Successive Halving
+        & $93.853 \pm 0.134$
+        & $71.862 \pm 0.654$
+        & $\mathbf{44.768 \pm 1.053}$ \\
+        Learning Curve Extrapolation
+        & $93.460 \pm 0.376$
+        & $68.854 \pm 1.779$
+        & $42.645 \pm 3.704$ \\ \hline
+    \end{tabular}
+    \caption{Selected-architecture test accuracy (\%, mean $\pm$ standard deviation over 10 seeds).}
+    \label{tab:test-accuracy}
+\end{table}

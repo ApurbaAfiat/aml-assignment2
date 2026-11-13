@@ -200,10 +200,8 @@ Both developers follow these rules to ensure smooth integration:
 - [x] **Random Sample Unit Tests (`tests/test_random_sample.py`)**: 4 unit tests verifying sample size budgets, incumbent tracking, and seed reproducibility.
 - [x] **Learning Curve Extrapolation (`algorithms/learning_curve.py`)** learning curve extrapolation implementation
 - [x] **Learning Curve Extrapolation unit tests (`tests/test_learning_curve.py`)** unit tests to verify learning curve extrapolation implementation
-- [X] **Visualisation (`visualization/`)**
-
-### Next Stages
-- [ ] **Scientific Report (`report/`)** *(Marit)*
+- [x] **Visualisation (`visualization/`)**
+- [x] **Scientific Report (`report/`)**
 
 ---
 

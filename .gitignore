@@ -42,4 +42,5 @@ figures/*.pdf
 
 # Assignment submission
 AutoML_Assignment_2.pdf
-todo
+report/*.pdf
+report/figures/*.png

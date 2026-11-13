@@ -1,0 +1,84 @@
+%%%%% DO NOT CHANGE ANYTHING STARTING HERE %%%%%%%%%
+
+\documentclass[12pt]{article}
+
+% include some packages
+\usepackage[left=1.7cm,right=1.7cm,top=2cm,bottom=3cm]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\newcommand{\algorithmautorefname}{Algorithm}
+\newcommand{\thmautorefname}{Theorem}
+\newcommand{\proofautorefname}{Proof}
+\usetikzlibrary{shapes,backgrounds,calc,arrows}
+\usepackage{microtype}
+\usepackage{xurl}
+\frenchspacing
+\usetikzlibrary{positioning,shapes,shadows,arrows,calc,mindmap}
+\usepackage[parfill]{parskip}
+
+\title{Neural Architecture Search on NATS Bench \\ \large AutoML Assignment 2 \\ \small Apurba Afiat \& Marit Kraijenoord}
+\date{}
+\author{}
+%%%%% DO NOT CHANGE ANYTHING ABayesian OptimizationVE. CHanging margins, font size, etc. is not allowed %%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+\vspace{-2.8cm}
+
+
+\section{Introduction}
+%Introduce the topic and the problem you are tackling. Don't forget the research question!
+For the second assignment of the course Automated Machine Learning we are investigating Neural Architecture Search on the NATS-Bench~\cite{dong2022natsbench}. Neural Architecture Search is a technique in which the design of neural networks is automated. It is a way of selecting an architecture to maximize model performance under a limited search budget, which is the simulated time in these experiments. We compare five search methods for finding the best-performing Neural Architecture, based on the validation set accuracy. The search methods included are Random Search, Random Sample, Bayesian Optimization, Successive Halving and Learning Curve Extrapolation, which will be explained in more detail in Section~\ref{methods}. Each search method differs in how they evaluate and their training resources, making it vital to compare their results and evaluate their accuracy in providing the best-performing Neural Architecture. To evaluate these methods, we use the NATS-Bench Topology Search Space, which contains 15,625 neural architectures that have already been trained. This means the experiments query benchmark results, instead of training every candidate from scratch, making it quick to make comparisons. Our research question is as follows: \\
+\textit{How do the five search methods compare in final validation-selected test accuracy under a matched budget?} \\
+
+\section{Methodology and Implementation}\label{methods}
+% Explain the methods used and the way you implemented them. These include the surrogate model, sequential model-based optimization and successive halving.
+\subsection{Search methods}
+In this experiment, we compare the results of the five search methods as explained here. \\
+\textbf{Random Search}~\cite{DBLP:journals/corr/abs-1902-07638} evaluates architectures one after another without replacement while keeping track of the best result so far. It is a baseline method, as it can return the best-performing architecture at any time. \\
+\textbf{Random Sample}~\cite{li2021improving} is similar to Random Search, as it randomly selects a subset of architectures to evaluate. Random Sample chooses a random subset upfront, whereas Random Search uses a sequential search. \\
+\textbf{Bayesian Optimization (Bayesian Optimization)}~\cite{kandasamy2019neuralarchitecturesearchbayesian} chooses several random architectures and evaluates them, after which it iteratively picks new architectures to evaluate based on those initial results. It represents each architecture with a one-hot feature vector and then fits a Gaussian Process with a Matérn (5/2) kernel to predict validation accuracy. Expected Improvement (EI) is uses to select the next unevaluated architecture, where EI favours candidates that have a high predicted performance. EI also accounts for uncertainty, so that potentially promising candidates can be tried.  \\
+\textbf{Successive Halving (Successive Halving)}~\cite{zhang-duh-2024-best} evaluates many candidates at low fidelity and then ranks them by validation accuracy, after which only the strongest candidates are promoted to higher fidelity. Fidelity increases from 12, 36, 108, and 200 epochs, with the candidate pool being reduced by a factor of three each round. This means that training effort is concentrated on candidates that perform well in early stages. \\
+\textbf{Learning Curve Extrapolation (Learning Curve Extrapolation)}~\cite{domhan2015speeding} evaluates architectures in a seeded random order, with their validation accuracy observed at successive epochs up to 200. After the first five observations, several learning-curve models are fitted and combined to the candidate's validation learning curve, after which its accuracy is extrapolated to epoch 200. The first candidate is evaluated to completion, so a baseline is established. For the candidates that follow, we keep evaluating while the predicted final accuracy exceeds the best completed candidate's final validation accuracy, otherwise we stop that candidate early. Among completed candidates, the architecture with the highest final validation accuracy is selected.
+
+\subsection{Shared evaluation protocol}
+All search methods search the same NATS-Bench topology space and use validation accuracy to select the architecture, after which we evaluate the final chosen model on the test accuracy. A full-fidelity evaluation is defined as evaluating one architecture through 200 epoch training runs. Both Successive Halving and Learning Curve Extrapolation use partial training information, which is why we compare methods mainly under an equal budget of simulated training time (200,000 seconds), which we computed from the benchmark's training time estimates. For each search method, 10 runs are done, using fixed random seeds from 0 to 9 inclusive. Results are summarized across those seeds. We compare the results on the computed test accuracy.
+
+\section{Experiments and Results}
+% Describe the experiments and results found.
+\subsection{Experimental setup}
+We compared Random Search, Random Sample, Bayesian Optimization, Successive Halving and Learning Curve Extrapolation on the CIFAR-10~\cite{Krizhevsky09learningmultiple}, CIFAR-100~\cite{krizhevsky2009learning} and ImageNet16-120~\cite{DenDon09Imagenet} datasets using the NATS-Bench TSS. We ran ten seeds per method and dataset, with each run using a budget of 200,000 seconds of simulated benchmark training time. Each architecture was selected based on the validation accuracy, with the test set accuracy computed after. Results are averaged over the ten runs per method and dataset.
+
+\subsection{Results}
+Table~\ref{tab:test-accuracy} shows the test accuracy per method and dataset with the standard deviation over 10 runs with different seeds. The best-performing method per dataset is highlighted. These results seem to suggest that Bayesian Optimization outperforms the other methods on the CIFAR-10 and CIFAR-100 dataset, while Successive Halving seems to perform best on the ImageNet16-120 dataset. However, the differences with the other methods are small when taking the standard deviation into account, meaning we cannot conclude that one method always outperforms the others.
+\input{results}
+Figure~\ref{fig:searchconvergence} shows the search convergence to the best validation accuracy per method and dataset. We can see that for all three datasets, Random Search and Bayesian Optimization converge to the best validation accuracy in a very similar trend. Furthermore, Learning Curve Extrapolation takes the most evaluations in each dataset, which is to be expected due to the nature of the method. Both Learning Curve Extrapolation and Successive Halving can do more evaluations as they stop candidates that are not very promising before they do a full-fidelity run. As each method has the same budget in simulated time and not evaluations, both Learning Curve Extrapolation and Successive Halving can do more evaluations in the same simulated train time. The Random Search, Random Sample and Bayesian Optimization methods each stop at approximately the same number of evaluations, as they have to do a full-fidelity run for each architecture.
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\linewidth]{figures/convergence_all_datasets_evaluations.png}
+    \caption{Search convergence per dataset to best validation accuracy over 10 seeds; Shaded band indicate $\pm$ standard deviation.}
+    \label{fig:searchconvergence}
+\end{figure}
+
+\section{Discussion}
+% Discuss the results.
+The results in Table~\ref{tab:test-accuracy} and Figure~\ref{fig:searchconvergence} show that the best method depends on the dataset. While Bayesian Optimization has the highest mean test accuracy on CIFAR-10 and CIFAR-100 and Successive Halving on ImageNet16-120, the top methods are close in mean test accuracy. Compared to the standard deviations, the differences are small, suggesting that we cannot definitively say that one method consistently outperforms others. The search convergence to the best validation accuracy in Figure~\ref{fig:searchconvergence} shows similar results, where the convergence bands overlap on multiple occasions across the three datasets. However, we cannot compare those results to those in Table~\ref{tab:test-accuracy} directly, as it uses test accuracy, while Figure~\ref{fig:searchconvergence} uses validation accuracy. Both results do show that the top methods are very close in performance, based on both validation and test accuracy. \\
+Figure~\ref{fig:searchconvergence} also shows that while Random Search, Random Sample and Bayesian Optimization improve gradually, Successive Halving improves in jumps. This is consistent with the method, where promising candidates are promoted through higher fidelities. Learning Curve Extrapolation improves more gradually and takes many more plotted evaluations to its final validation accuracy. It does perform lowest among the methods on each dataset when evaluating the test accuracy in Table~\ref{tab:test-accuracy}, although the standard deviation suggests that these results cannot be definitive. \\
+In both Table~\ref{tab:test-accuracy} and Figure~\ref{fig:searchconvergence} we see that performance also depends on the dataset, with no method largely outperforming the other methods. Per dataset, the methods are very close in the final validation and test accuracy.
+
+\section{Conclusion}
+% Draw your conclusions and answer the research question.
+In this assignment we compared five neural architecture search methods on three NATS-bench datasets under a matched simulated training-time budget of 200,000 seconds. We evaluated Random Search, Random Sample, Bayesian Optimization, Successive Halving and Learning Curve Extrapolation, with each method validated and tested on the CIFAR-10, CIFAR-100 and ImageNet16-120 datasets. The results suggest that the best-performing model depends on the dataset. Bayesian Optimization had the highest mean test accuracy on CIFAR-10 and CIFAR-100, with Successive Halving having the highest mean test accuracy on ImageNet16-120. However, the differences with the other methods are small compared to the standard deviations, meaning we cannot conclude that one method consistently outperforms the other methods. The convergence plots show that Random Search, Random Sample and Bayesian Optimization make rapid progress in earlier evaluations, while Successive Halving and Learning Curve Extrapolation require more evaluations to reach a similar validation accuracy. Our research question was: \textit{How do the five search methods compare in final validation-selected test accuracy under a matched budget?} We can say that the five search methods are very close in the validation-selected test accuracy, with Bayesian Optimization performing best on CIFAR-10 and CIFAR-100, Successive Halving performing best on ImageNet16-120. However, due to small differences compared to the standard deviation, we cannot say that one method is absolutely best for each dataset.
+
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}
+

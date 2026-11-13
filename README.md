@@ -52,7 +52,7 @@ Total architectures: 5⁶ = 15,625.
 ## Project Structure
 
 ```
-nats-bench-nas/
+aml-assignment2/
 ├── README.md                          # This file
 ├── requirements.txt                   # Python dependencies
 ├── run_experiments.py                 # Main CLI entry point
@@ -103,8 +103,13 @@ nats-bench-nas/
 ├── results/                           # Generated CSV outputs (git-ignored)
 │   └── .gitkeep
 │
-└── figures/                           # Generated plot outputs (git-ignored)
-    └── .gitkeep
+├── figures/                           # Generated plot outputs (git-ignored)
+│   └── .gitkeep
+│
+└── report/                            # LaTeX report files
+    ├── main.tex                       # Scientific report source
+    ├── results.tex                    # Formatted results table
+    └── refs.bib                       # References bibliography
 ```
 
 ---
@@ -224,7 +229,7 @@ Orchestrates the full comparison grid:
 
 ```bash
 git clone https://github.com/ApurbaAfiat/aml-assignment2.git
-cd aml-assignment2/nats-bench-nas
+cd aml-assignment2
 ```
 
 ### 2. Create a Python environment

@@ -72,7 +72,7 @@ aml-assignment2/
 │   ├── random_sample.py               # Random Sample
 │   ├── bayesian_opt.py                # Bayesian Optimisation (GP + EI)
 │   ├── successive_halving.py          # Successive Halving (multi-fidelity)
-│   └── learning_curve.py             # Learning Curve Extrapolation (power-law)
+│   └── learning_curve.py             # Learning Curve Extrapolation
 │
 ├── utils/
 │   ├── __init__.py
@@ -158,7 +158,7 @@ All five algorithms inherit from `BaseNAS` (`algorithms/base.py`) and implement 
 | **Random Sample** | `algorithms/random_sample.py` | Samples a fixed-size subset of architectures upfront and evaluates all of them at full fidelity (hp=200). |
 | **Bayesian Optimisation** | `algorithms/bayesian_opt.py` | Fits a Gaussian Process surrogate (Matérn 5/2 kernel) to observed (architecture, accuracy) pairs and selects the next candidate via Expected Improvement (EI). Architectures are encoded as 30-dimensional one-hot vectors. |
 | **Successive Halving** | `algorithms/successive_halving.py` | Multi-fidelity search with geometric rung schedule (12 → 36 → 108 → 200 epochs, η = 3). Starts with many candidates at low fidelity and promotes only the top 1/η survivors to the next rung. |
-| **Learning Curve Extrapolation** | `algorithms/learning_curve.py` | Evaluates architectures epoch-by-epoch. After a few observations, fits a power-law model (Domhan et al., 2015) to predict final accuracy, stopping candidates early if the prediction falls below the best completed run. |
+| **Learning Curve Extrapolation** | `algorithms/learning_curve.py` | Evaluates architectures epoch-by-epoch. After a few observations, fits several learning-curve models (including a power-law model (Domhan et al., 2015)) to predict final accuracy, stopping candidates early if the prediction falls below the best completed run. |
 
 ---
 
